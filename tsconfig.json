@@ -104,5 +104,6 @@
   "exclude": [
     "node_modules",
     "dist",
+    "Dockerfile",
   ]
 }
