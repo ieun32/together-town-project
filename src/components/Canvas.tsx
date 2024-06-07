@@ -69,7 +69,6 @@ const Canvas = () => {
             break;
           case "update_positions":
             usersRef.current = parsed.data;
-            console.log(usersRef.current);
             break;
           default:
             break;
