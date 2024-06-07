@@ -1,0 +1,42 @@
+:root {
+  --button-color: #f0f0f0;
+  --button-hover-color: #e0e0e0;
+}
+
+@font-face {
+  font-family: 'Galmuri-Regular';
+  src: url("../src/assets/fonts/Galmuri11.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'Galmuri-Bold';
+  src: url("../src/assets/fonts/Galmuri11-Bold.ttf") format("truetype");
+}
+
+body {
+  background-color: black;
+}
+
+main {
+  position: relative;
+}
+
+.nickname-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  border: 2px solid black;
+  box-shadow: 0 0 0 3px white;
+  background-color: var(--button-color);
+  color: black;
+  font-family: "Galmuri-Regular", sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.nickname-button:hover {
+  background-color: var(--button-hover-color);
+}

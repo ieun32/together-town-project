@@ -1,12 +1,13 @@
-import React from 'react';
+import React from "react";
+import Canvas from "./components/Canvas";
+import "./App.css";
 
 const App = () => {
   return (
     <>
-      <h1>깃허브 액션 테스트</h1>
-      <canvas width="1024" height="576" />
+      <Canvas />
     </>
-  )
-}
+  );
+};
 
 export default App;
