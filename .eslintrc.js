@@ -4,14 +4,19 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  extends: ["eslint:recommended", "plugin:prettier/recommended"],
+  extends: [
+    "eslint:recommended",
+    "plugin:prettier/recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+  ],
   plugins: [],
   parserOptions: {
-    ecmaVersion: "latest",
+    ecmaVersion: "es2021",
     sourceType: "module",
   },
   rules: {
     "prettier/prettier": ["error", { endOfLine: "auto" }],
   },
-  ignorePatterns: ["dist"],
+  ignorePatterns: ["dist", "server.js"],
 };
