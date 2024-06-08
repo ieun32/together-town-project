@@ -14,7 +14,7 @@ type BoundaryType = {
 };
 
 type SpriteType = {
-  canvas: HTMLCanvasElement;
+  canvas: HTMLCanvasElement | null;
   position: Position;
   image: HTMLImageElement;
   sprites: { [key: string]: HTMLImageElement };

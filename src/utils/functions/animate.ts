@@ -12,7 +12,7 @@ import { usersType } from "../../types/utils";
  * @returns void
  */
 const animate = (
-  canvas: HTMLCanvasElement,
+  canvas: HTMLCanvasElement | null,
   mapImage: HTMLImageElement,
   avatar: Sprite,
   usersRef: React.RefObject<usersType | null>,

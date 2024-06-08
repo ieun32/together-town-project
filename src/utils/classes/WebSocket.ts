@@ -16,7 +16,7 @@ import { usersType } from "../../types/utils";
  */
 class _WebSocket {
   public blocksize: number;
-  public avatar: Sprite;
+  public avatar: Sprite | null;
   public socket: WebSocket | null;
   public users: usersType | null;
   constructor(avatar: Sprite, blocksize: number) {
@@ -30,6 +30,7 @@ class _WebSocket {
    * 웹소켓 연결
    */
   public open() {
+    if (!this.avatar) return;
     const nickname = this.avatar.nickname;
     const position = this.avatar.position;
     const direction = "ArrowDown";

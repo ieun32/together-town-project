@@ -57,7 +57,7 @@ const Canvas = () => {
         nickname: nicknameRef.current || "player",
       });
 
-      const ws = new _WebSocket(avatarRef.current as Sprite, BLOCK_SIZE);
+      const ws = new _WebSocket(avatarRef.current, BLOCK_SIZE);
       websocketRef.current = ws;
 
       ws.open();
@@ -69,6 +69,7 @@ const Canvas = () => {
             break;
           case "update_positions":
             usersRef.current = parsed.data;
+            console.log(usersRef.current);
             break;
           default:
             break;
@@ -76,7 +77,7 @@ const Canvas = () => {
       });
 
       animate(
-        canvasRef.current as HTMLCanvasElement,
+        canvasRef.current,
         images.mapImage,
         avatarRef.current,
         usersRef,
@@ -132,11 +133,7 @@ const Canvas = () => {
       <button
         className="nickname-button"
         onClick={() =>
-          nicknameHandler(
-            avatarRef.current as Sprite,
-            nicknameRef,
-            websocketRef.current as _WebSocket,
-          )
+          nicknameHandler(avatarRef.current, nicknameRef, websocketRef.current)
         }
       >
         닉네임 변경하기

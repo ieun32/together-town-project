@@ -69,6 +69,7 @@ const avatarCollusion = (sprite: Sprite, others: usersType): boolean => {
   let isCollusion = false;
 
   for (const other of Object.values(others)) {
+    if (!sprite.canvas) return false;
     const { x, y } = convertPosition(
       other.position.x,
       other.position.y,

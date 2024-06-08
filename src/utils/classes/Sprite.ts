@@ -5,7 +5,7 @@ import { SpriteType } from "../../types/utils";
  * @class Sprite
  * @param {SpriteType} { canvas, image, position, sprites, scaleFactor, nickname }
  * @property {string} nickname 닉네임
- * @property {HTMLCanvasElement} canvas 캔버스 엘리먼트
+ * @property {HTMLCanvasElement | null} canvas 캔버스 엘리먼트
  * @property {HTMLImageElement} image 이미지 엘리먼트
  * @property {{ x: number; y: number }} position 캐릭터 위치
  * @property {number} scaleFactor 캐릭터 이미지 크기 배율
@@ -16,7 +16,7 @@ import { SpriteType } from "../../types/utils";
  */
 class Sprite {
   public nickname: string;
-  public canvas: HTMLCanvasElement;
+  public canvas: HTMLCanvasElement | null;
   public position: { x: number; y: number };
   public image: HTMLImageElement;
   public scaleFactor: number;
@@ -46,6 +46,7 @@ class Sprite {
    * @returns {void}
    */
   public draw(): void {
+    if (!this.canvas) return;
     const ctx = this.canvas.getContext("2d");
     if (!ctx) return;
 
@@ -79,6 +80,7 @@ class Sprite {
    * @returns {void}
    */
   private drawNickname(): void {
+    if (!this.canvas) return;
     const ctx = this.canvas.getContext("2d");
     if (!ctx) return;
 
