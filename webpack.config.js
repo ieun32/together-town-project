@@ -30,7 +30,7 @@ module.exports = {
               "@babel/preset-env",
               "@babel/preset-react",
               "@babel/preset-typescript",
-              { targets: "defaults" },
+              { targets: "> 0.2% not dead" },
             ],
             plugins: [
               "@babel/plugin-transform-runtime",
