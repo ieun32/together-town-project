@@ -1,6 +1,14 @@
 :root {
+  --black-color: #000000;
+  --white-color: #f0f0f0;
+  --gray-color: #808080;
   --button-color: #f0f0f0;
   --button-hover-color: #e0e0e0;
+  --dark-blue-color: #141E46;
+  --dark-blue-hover: #1A2A6C;
+  --mint-color: #8DECB4;
+  --dark-mint-color: #41B06E;
+  --dark-mint-hover: #2E8A4A;
 }
 
 @font-face {
@@ -15,9 +23,14 @@
 
 body {
   background-color: black;
+  background-image: url("./assets/images/space.jpg");
 }
 
 main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
   position: relative;
 }
 
@@ -39,4 +52,75 @@ main {
 
 .nickname-button:hover {
   background-color: var(--button-hover-color);
+}
+
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--dark-blue-color);
+  color: var(--black-color);
+  padding: 2rem 4rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 0 3px var(--gray-color);
+  font-family: "Galmuri-Regular", sans-serif;
+}
+
+.welcome-container>img {
+  width: 15rem;
+  height: 10rem;
+}
+
+.welcome-container>h2 {
+  font-size: 1.2rem;
+  color: var(--white-color);
+}
+
+.welcome-container>h2 .title-color {
+  color: var(--title-color);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.form > input {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 2px solid var(--black-color);
+  font-family: "Galmuri-Regular", sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.form select {
+  margin-top: 1rem;
+  padding: 0.5rem 2.7rem;
+  border-radius: 0.5rem;
+  border: 2px solid var(--black-color);
+  font-family: "Galmuri-Regular", sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.form > button {
+  margin-top: 1rem;
+  padding: 0.5rem 2rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  border: none;
+  background-color: var(--dark-mint-color);
+  color: var(--white-color);
+  font-family: "Galmuri-Regular", sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.form > button:hover {
+  background-color: var(--dark-mint-hover);
 }

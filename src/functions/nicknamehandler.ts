@@ -5,14 +5,16 @@ const nicknameHandler = (
   avatar: Sprite | null,
   nickname: React.MutableRefObject<string>,
   ws: _WebSocket | null,
+  setNickname: (nickname: string) => void,
 ) => {
   const newNickname = prompt("새로운 닉네임을 입력해주세요", nickname.current);
   if (newNickname) {
     nickname.current = newNickname;
   }
   if (!avatar || !ws) return;
+  setNickname(nickname.current);
   avatar.changeNickname(nickname.current);
-  ws.send_nickname(nickname.current);
+  // ws.send_nickname(nickname.current);
 };
 
 export default nicknameHandler;

@@ -42,6 +42,8 @@ wss.on("connection", (socket) => {
           position: parsed.data.position,
           direction: parsed.data.direction,
           blocksize: parsed.data.blocksize,
+          attack: parsed.data.attack,
+          weapon: parsed.data.weapon,
         };
         sockets.forEach((sk) => {
           if (sk.id === socket.id) return;
@@ -68,6 +70,7 @@ wss.on("connection", (socket) => {
       case "avatar_info":
         userInfo[socket.id].position = parsed.data.position;
         userInfo[socket.id].direction = parsed.data.direction;
+        userInfo[socket.id].attack = parsed.data.attack;
         sockets.forEach((sk) => {
           if (sk.id === socket.id) return;
           sk.send(

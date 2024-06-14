@@ -1,4 +1,4 @@
-import { BoundaryType } from "../../types/utils";
+import { BoundaryType } from "../types/utils";
 
 /**
  * 충돌 좌표를 위한 Boundary 클래스
@@ -6,7 +6,7 @@ import { BoundaryType } from "../../types/utils";
  * @property {HTMLCanvasElement} canvas
  * @property {{ x: number; y: number }} position
  * @property {{ width: number; height: number }} size
- * @return {void}
+ * @returns {void}
  */
 class Boundary {
   private canvas: HTMLCanvasElement;
@@ -20,7 +20,8 @@ class Boundary {
 
   /**
    * 충돌 좌표 그리기
-   * @param param0 { transparent?: number } 투명도
+   * @param param0 object
+   * @param param0.transparent 투명도 0 ~ 1
    * @returns {void}
    */
   public draw({ transparent = 0.5 }: { transparent?: number }): void {
@@ -33,6 +34,18 @@ class Boundary {
       this.size.width,
       this.size.height,
     );
+  }
+
+  /**
+   * 충돌 좌표 복제
+   * @returns {Boundary}
+   */
+  public clone(): Boundary {
+    return new Boundary({
+      canvas: this.canvas,
+      position: { ...this.position },
+      size: { ...this.size },
+    });
   }
 }
 

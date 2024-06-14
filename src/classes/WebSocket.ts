@@ -1,5 +1,5 @@
 import Sprite from "./Sprite";
-import { usersType } from "../../types/utils";
+import { usersType } from "../types/utils";
 
 /**
  * 웹소켓 클래스
@@ -8,11 +8,11 @@ import { usersType } from "../../types/utils";
  * @property {Sprite} avatar 캐릭터 스프라이트
  * @property {WebSocket | null} socket 웹소켓 객체
  * @property {usersType | null} users 다른 사용자 정보
- * @method open 웹소켓 연결
- * @method send_nickname 닉네임 전송
- * @method send_avatar_info 캐릭터 정보 전송
- * @method makeMessage 메시지 생성
- * @return {void}
+ * @function open 웹소켓 연결
+ * @function send_nickname 닉네임 전송
+ * @function send_avatar_info 캐릭터 정보 전송
+ * @function makeMessage 메시지 생성
+ * @returns {void}
  */
 class _WebSocket {
   public blocksize: number;
@@ -35,11 +35,15 @@ class _WebSocket {
     const position = this.avatar.position;
     const direction = "ArrowDown";
     const blocksize = this.blocksize;
+    const attack = this.avatar.attack;
+    const weapon = this.avatar.weapon;
     const userInfo = {
       nickname,
       position,
       direction,
       blocksize,
+      attack,
+      weapon,
     };
 
     const socket = new WebSocket(`ws://${window.location.host}`);
@@ -60,11 +64,12 @@ class _WebSocket {
   }
 
   public send_avatar_info(avatar: Sprite, direction: string) {
-    const { position } = avatar;
+    const { position, attack } = avatar;
     this.socket?.send(
       this.makeMessage("avatar_info", {
         position,
         direction,
+        attack,
       }),
     );
   }

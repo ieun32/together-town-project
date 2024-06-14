@@ -1,4 +1,4 @@
-import mapImageSrc from "../assets/images/map.png";
+import mapImageSrc from "../assets/images/mapgrid.png";
 import playerDownSrc from "../assets/images/playerDown.png";
 import playerUpImageSrc from "../assets/images/playerUp.png";
 import playerLeftImageSrc from "../assets/images/playerLeft.png";
