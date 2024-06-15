@@ -44,6 +44,8 @@ class Sprite {
     cursor,
     blocksize,
     weapon,
+    attack,
+    health,
   }: SpriteType) {
     this.canvas = canvas;
     this.position = {
@@ -56,18 +58,13 @@ class Sprite {
     this.image = image;
     this.frame = { val: 0, elapsed: 0 };
     this.moving = false;
-    this.attack = {
-      state: false,
-      endX: 0,
-      endY: 0,
-      angle: 0,
-    };
+    this.attack = attack;
     this.sprites = sprites;
     this.nickname = nickname;
-    this.cursor = cursor || { x: position.x, y: position.y };
+    this.cursor = cursor ? { x: cursor.x, y: cursor.y } : { x: 0, y: 0 };
     this.blocksize = blocksize;
     this.weapon = weapon;
-    this.health = 100;
+    this.health = health === undefined ? 100 : health;
   }
 
   /**
@@ -78,7 +75,7 @@ class Sprite {
     if (!this.canvas) return;
     const ctx = this.canvas.getContext("2d");
     if (!ctx) return;
-
+    if (!this.image) return;
     const imgWidth = (this.image.width / 4) * this.scaleFactor;
     const imgHeight = this.image.height * this.scaleFactor;
 
@@ -146,21 +143,6 @@ class Sprite {
     this.drawNickname();
   }
 
-  private moveCursor() {
-    if (!this.canvas) return;
-    const ctx = this.canvas.getContext("2d");
-    const canvasRect = this.canvas.getBoundingClientRect();
-    if (!ctx) return;
-
-    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-    ctx.fillRect(
-      this.cursor.x - canvasRect.left,
-      this.cursor.y - canvasRect.top,
-      this.blocksize,
-      this.blocksize,
-    );
-  }
-
   /**
    * 무기 그리기
    * @returns {void}
@@ -172,18 +154,16 @@ class Sprite {
 
     const img = new Image();
     img.src = this.weapon === "knife" ? knife : fire;
-    // 각도 계산
-    const dx = this.cursor.x - window.innerWidth / 2;
-    const dy = this.cursor.y - window.innerHeight / 2;
 
-    const angle = Math.atan2(dy, dx);
     // 반지름 길이
     const radius =
       this.weapon === "knife" ? this.blocksize : this.blocksize * 5;
-    // 가운데 좌표
+
+    // 캐릭터의 중심 좌표 계산
     const centerX = this.position.x + this.blocksize / 2;
     const centerY =
       this.position.y + (this.image.height * this.scaleFactor) / 1.4;
+
     // 중심점 그리기
     ctx.beginPath();
     ctx.arc(centerX, centerY, 1, 0, Math.PI * 2, false);
@@ -191,8 +171,10 @@ class Sprite {
     ctx.fill();
 
     // 끝나는 좌표
-    const endX = centerX + radius * 1.5 * Math.cos(angle);
-    const endY = centerY + radius * 1.5 * Math.sin(angle);
+    const endX =
+      centerX + radius * 1.5 * Math.cos(this.attack.angle * (Math.PI / 180));
+    const endY =
+      centerY + radius * 1.5 * Math.sin(this.attack.angle * (Math.PI / 180));
     this.attack.endX = endX;
     this.attack.endY = endY;
     console.log(this.attack.endX, this.attack.endY);
@@ -200,7 +182,7 @@ class Sprite {
     // 무기 이미지 그리기
     ctx.save();
     ctx.translate(centerX, centerY);
-    ctx.rotate(angle);
+    ctx.rotate(this.attack.angle * (Math.PI / 180)); // 각도를 라디안으로 변환하여 적용
 
     // 무기의 크기 조절
     const weaponWidth = this.weapon === "knife" ? radius * 1.5 : radius * 1.1; // 무기 이미지의 너비

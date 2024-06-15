@@ -1,8 +1,9 @@
 import Boundary from "../classes/Boundary";
 import Sprite from "../classes/Sprite";
 import Background from "../classes/Background";
-import { convertAbsolutePosition, convertPosition } from "./convertPosition";
+import { convertAndMakeSprite } from "./convertPosition";
 import { usersType } from "../types/utils";
+import _WebSocket from "../classes/WebSocket";
 
 /**
  * 애니메이션 함수
@@ -12,17 +13,30 @@ import { usersType } from "../types/utils";
  * @param {usersType} usersRef 다른 유저 정보
  * @param {Boundary[]} boundaries 충돌 좌표 인스턴스들
  * @param {number} blocksize 한 블록의 크기
+ * @param {boolean} setIsDead 게임 종료 여부
+ * @param {_WebSocket} websocket 웹소켓 객체
  */
 const animate = (
   canvas: HTMLCanvasElement | null,
-  background: Background, // Add JSDoc @param type for mapImage
+  background: Background,
   avatar: Sprite,
-  usersRef: React.RefObject<usersType | null>,
+  usersRef: React.MutableRefObject<usersType[]>,
   boundaries: Boundary[],
   blocksize: number,
+  setIsDead: React.Dispatch<React.SetStateAction<boolean>>,
+  websocket: _WebSocket | null,
 ): void => {
   window.requestAnimationFrame(() =>
-    animate(canvas, background, avatar, usersRef, boundaries, blocksize),
+    animate(
+      canvas,
+      background,
+      avatar,
+      usersRef,
+      boundaries,
+      blocksize,
+      setIsDead,
+      websocket,
+    ),
   );
 
   if (!canvas) return;
@@ -32,6 +46,16 @@ const animate = (
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
+  // 체력이 0 이하이면 웹소켓 통신 종료 및 첫화면 이동
+  if (avatar.health && avatar.health <= 0) {
+    if (!websocket) return;
+    if (websocket.socket?.readyState === 1) {
+      websocket.socket.close();
+    }
+    setIsDead(true);
+    return;
+  }
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   background.draw();
   avatar.draw();
@@ -39,50 +63,15 @@ const animate = (
     boundary.draw({ transparent: 0 });
   });
 
-  const users = usersRef.current;
-  if (!users) return;
+  const users = [...usersRef.current];
+  if (!users || users.length === 0) return;
 
-  const directionImage: { [key: string]: HTMLImageElement } = {
-    ArrowUp: avatar.sprites.up,
-    ArrowDown: avatar.sprites.down,
-    ArrowLeft: avatar.sprites.left,
-    ArrowRight: avatar.sprites.right,
-  };
-
-  const others: Sprite[] = [];
-  Object.values(users).forEach((user) => {
-    if (user === null) return;
-    const { x, y, absoluteX, absoluteY } = convertPosition(
-      // 한 칸의 크기를 비례하게 바꾸는 함수
-      user.position.x,
-      user.position.y,
-      user.position.absoluteX,
-      user.position.absoluteY,
-      user.blocksize,
-      canvas.width / 11,
-    );
-    others.push(
-      new Sprite({
-        canvas,
-        position: {
-          x,
-          y,
-          absoluteX,
-          absoluteY,
-        },
-        image: directionImage[user.direction],
-        sprites: avatar.sprites,
-        scaleFactor: avatar.scaleFactor,
-        nickname: user.nickname,
-        blocksize,
-        weapon: user.weapon,
-      }),
-    );
-  });
-
-  others.forEach((other) => {
-    const converted = convertAbsolutePosition(avatar, other);
-    converted.draw();
+  users.forEach((user: usersType) => {
+    if (!user) return;
+    if (user.nickname === avatar.nickname) return;
+    const newOther = convertAndMakeSprite(avatar, user);
+    if (!newOther) return;
+    newOther.draw();
   });
 };
 

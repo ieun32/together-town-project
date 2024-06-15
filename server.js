@@ -28,7 +28,6 @@ wss.on("connection", (socket) => {
   sockets[socket.id] = socket;
 
   console.log("client connected with id", socket.id);
-  console.log(userInfo)
   socket.send(makeMessage("message", "Welcome to the together town! ✨"));
   socket.send(makeMessage("update_positions", userInfo.filter((u, i) => i !== socket.id)));
 
@@ -44,7 +43,10 @@ wss.on("connection", (socket) => {
           blocksize: parsed.data.blocksize,
           attack: parsed.data.attack,
           weapon: parsed.data.weapon,
+          health: parsed.data.health,
+          cursor: parsed.data.cursor,
         };
+        console.log(userInfo)
         sockets.forEach((sk) => {
           if (sk.id === socket.id) return;
           sk.send(
@@ -71,6 +73,9 @@ wss.on("connection", (socket) => {
         userInfo[socket.id].position = parsed.data.position;
         userInfo[socket.id].direction = parsed.data.direction;
         userInfo[socket.id].attack = parsed.data.attack;
+        userInfo[socket.id].weapon = parsed.data.weapon;
+        userInfo[socket.id].health = parsed.data.health;
+        userInfo[socket.id].cursor = parsed.data.cursor;
         sockets.forEach((sk) => {
           if (sk.id === socket.id) return;
           sk.send(
@@ -80,6 +85,21 @@ wss.on("connection", (socket) => {
             ),
           );
         });
+        break;
+      case "attacked_user_info":
+        const id = userInfo.findIndex((u) => u.nickname === parsed.data.nickname);
+        if(id === -1) return;
+        userInfo[id].health = parsed.data.health;
+        console.log(userInfo)
+        sockets.forEach((sk) => {
+          sk.send(
+            makeMessage(
+              "update_positions",
+              userInfo
+            ),
+          );
+        });
+        break;
       default:
         break;
     }

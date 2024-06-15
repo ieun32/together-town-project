@@ -76,7 +76,7 @@ const keyDownHandler = (
     avatar,
     nextPosition,
     nextBoundaryPosition,
-    usersRef.current,
+    usersRef,
   );
 
   // 충돌 좌표와 다른 사용자와의 충돌을 확인하여 이동
@@ -90,12 +90,13 @@ const keyDownHandler = (
   }
 };
 
-const keyUpHandler = ({ keyRef, avatar }: KeyUpHandlerType) => {
+const keyUpHandler = ({ keyRef, avatar, websocket }: KeyUpHandlerType) => {
   if (!keyRef) return;
   if (!avatar) return;
-  keyRef.current = "";
   avatar.moving = false;
   avatar.attack.state = false;
+  if (!websocket) return;
+  websocket.send_avatar_info(avatar, keyRef.current as string);
 };
 
 export { keyDownHandler, keyUpHandler };

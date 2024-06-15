@@ -37,6 +37,8 @@ class _WebSocket {
     const blocksize = this.blocksize;
     const attack = this.avatar.attack;
     const weapon = this.avatar.weapon;
+    const health = this.avatar.health;
+    const cursor = this.avatar.cursor;
     const userInfo = {
       nickname,
       position,
@@ -44,6 +46,8 @@ class _WebSocket {
       blocksize,
       attack,
       weapon,
+      health,
+      cursor,
     };
 
     const socket = new WebSocket(`ws://${window.location.host}`);
@@ -60,18 +64,35 @@ class _WebSocket {
   }
 
   public send_nickname(nickname: string) {
+    if (this.socket?.readyState === 1) return;
     this.socket?.send(this.makeMessage("nickname", { nickname }));
   }
 
   public send_avatar_info(avatar: Sprite, direction: string) {
-    const { position, attack } = avatar;
+    if (this.socket?.readyState !== 1) return;
+    const { position, attack, weapon, health, cursor } = avatar;
     this.socket?.send(
       this.makeMessage("avatar_info", {
         position,
         direction,
         attack,
+        weapon,
+        health,
+        cursor,
       }),
     );
+  }
+
+  public send_attacked_user(user: Sprite) {
+    if (this.socket?.readyState !== 1) return;
+    const { health, nickname } = user;
+    this.socket?.send(
+      this.makeMessage("attacked_user_info", { health, nickname }),
+    );
+  }
+
+  public close_socket() {
+    this.socket?.close();
   }
 
   private makeMessage(type: string, data: object) {

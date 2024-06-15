@@ -6,6 +6,7 @@ import "./App.css";
 
 const App = () => {
   const [hasNickname, setHasNickname] = React.useState(false);
+  const [isDead, setIsDead] = React.useState(false);
 
   useEffect(() => {
     if (hasSessionNickname()) {
@@ -15,8 +16,8 @@ const App = () => {
 
   return (
     <>
-      {hasNickname ? (
-        <Canvas />
+      {hasNickname && !isDead ? (
+        <Canvas setIsDead={setIsDead} />
       ) : (
         <WelcomeScreen setHasNickname={setHasNickname} />
       )}

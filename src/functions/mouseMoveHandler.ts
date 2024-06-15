@@ -1,9 +1,30 @@
 import Sprite from "../classes/Sprite";
+import _WebSocket from "../classes/WebSocket";
+import attackHandler from "./attackHandler";
+import { usersType } from "../types/utils";
 
-const mouseMoveHandler = (
+const mouseMoveAndDownHandler = (
+  sprite: Sprite | null,
+  keyRef: React.MutableRefObject<string | null>,
+  isMouseDown: boolean,
+  websocket: _WebSocket | null,
+  usersRef: React.MutableRefObject<usersType[]>,
+) => {
+  if (!sprite) return;
+  if (!keyRef.current) return;
+
+  if (isMouseDown) {
+    sprite.attack.state = true;
+    websocket?.send_avatar_info(sprite, keyRef.current);
+    attackHandler(sprite, usersRef.current, websocket);
+  }
+};
+
+const onlyMouseMoveHandler = (
   e: MouseEvent,
   sprite: Sprite | null,
   mousePositionRef: { x: number; y: number },
+  keyRef: React.MutableRefObject<string | null>,
 ) => {
   const mouseX = e.clientX;
   const mouseY = e.clientY;
@@ -21,9 +42,11 @@ const mouseMoveHandler = (
   };
 
   if (!sprite) return;
+  if (!keyRef.current) return;
 
   sprite.cursor.x = mouseX;
   sprite.cursor.y = mouseY;
+  sprite.attack.angle = angle;
   switch (angleToDirection(angle)) {
     case "left":
       sprite.image = sprite.sprites.left;
@@ -42,4 +65,4 @@ const mouseMoveHandler = (
   }
 };
 
-export default mouseMoveHandler;
+export { mouseMoveAndDownHandler, onlyMouseMoveHandler };

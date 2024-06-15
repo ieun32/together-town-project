@@ -1,12 +1,10 @@
 import { BoundaryType } from "../types/utils";
 
 /**
- * 충돌 좌표를 위한 Boundary 클래스
- * @class Boundary
- * @property {HTMLCanvasElement} canvas
- * @property {{ x: number; y: number }} position
- * @property {{ width: number; height: number }} size
- * @returns {void}
+ * 충돌 좌표를 위한 클래스
+ * @param {HTMLCanvasElement} canvas 캔버스 엘리먼트
+ * @param {object} position 좌표 정보
+ * @param {object} size 크기 정보
  */
 class Boundary {
   private canvas: HTMLCanvasElement;
@@ -20,8 +18,8 @@ class Boundary {
 
   /**
    * 충돌 좌표 그리기
-   * @param param0 object
-   * @param param0.transparent 투명도 0 ~ 1
+   * @param {object} param 설정
+   * @param {number} param.transparent 투명도
    * @returns {void}
    */
   public draw({ transparent = 0.5 }: { transparent?: number }): void {
@@ -37,10 +35,10 @@ class Boundary {
   }
 
   /**
-   * 충돌 좌표 복제
-   * @returns {Boundary}
+   * 충돌 좌표 복제 메서드
+   * @returns {Boundary} 충돌 좌표 인스턴스
    */
-  public clone(): Boundary {
+  public clone() {
     return new Boundary({
       canvas: this.canvas,
       position: { ...this.position },

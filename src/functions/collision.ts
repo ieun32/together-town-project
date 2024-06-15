@@ -1,8 +1,9 @@
+import React from "react";
 import Boundary from "../classes/Boundary";
 import Sprite from "../classes/Sprite";
 import collisions from "../constants/collisions";
 import { usersType } from "../types/utils";
-import { convertPosition, convertAbsolutePosition } from "./convertPosition";
+import { convertAndMakeSprite } from "./convertPosition";
 
 const collisionsMap: number[][] = [];
 const boundaries: Boundary[] = [];
@@ -13,9 +14,9 @@ for (let i = 0; i < collisions.length; i += 80) {
 
 /**
  * 충돌 좌표를 담은 배열을 반환하는 함수
- * @param canvas HTMLCanvasElement
- * @param size number
- * @returns boundaries Boundary[]
+ * @param {HTMLCanvasElement} canvas 캔버스 엘리먼트
+ * @param {number} size 사이즈
+ * @returns {Boundary[]} 충돌 좌표를 담은 배열
  */
 const makeBoundaries = (canvas: HTMLCanvasElement, size: number) => {
   collisionsMap.forEach((row, i) => {
@@ -36,9 +37,9 @@ const makeBoundaries = (canvas: HTMLCanvasElement, size: number) => {
 
 /**
  * 본인 좌표와 경계 좌표를 비교, 충돌 판정하는 함수
- * @param sprite Sprite 인스턴스
- * @param boundary Boundary 인스턴스
- * @returns boolean
+ * @param {Sprite} sprite Sprite 인스턴스
+ * @param {Boundary} boundary Boundary 인스턴스
+ * @returns {boolean} 충돌 여부
  */
 const rectangleCollision = (sprite: Sprite, boundary: Boundary) => {
   const iscollisionLX =
@@ -57,39 +58,18 @@ const rectangleCollision = (sprite: Sprite, boundary: Boundary) => {
 
 /**
  * 본인 좌표와 다른 유저의 좌표를 비교, 충돌 판정하는 함수
- * @param sprite 본인 캐릭터 인스턴스
- * @param others 다른 유저들의 좌표
- * @returns boolean
+ * @param {Sprite} sprite 본인 캐릭터 인스턴스
+ * @param {usersType[]} others 다른 유저들의 좌표
+ * @returns {boolean} 캐릭터들 간 충돌 여부
  */
-const avatarCollision = (sprite: Sprite, others: usersType): boolean => {
+const avatarCollision = (sprite: Sprite, others: usersType[]): boolean => {
   let iscollision = false;
 
-  for (const other of Object.values(others)) {
+  for (const other of others) {
     if (!sprite.canvas) return false;
-    const { x, y } = convertPosition(
-      other.position.x,
-      other.position.y,
-      other.position.absoluteX,
-      other.position.absoluteY,
-      other.blocksize,
-      sprite.canvas.width / 25,
-    );
-
-    other.position.x = x;
-    other.position.y = y;
-
-    const tempSprite = new Sprite({
-      canvas: sprite.canvas,
-      image: sprite.image,
-      position: other.position,
-      sprites: sprite.sprites,
-      scaleFactor: sprite.scaleFactor,
-      nickname: other.nickname,
-      blocksize: sprite.blocksize,
-      weapon: other.weapon,
-    });
-
-    const newOther = convertAbsolutePosition(sprite, tempSprite);
+    if (other.nickname === sprite.nickname) continue;
+    const newOther = convertAndMakeSprite(sprite, other);
+    if (!newOther) return false;
     const newX = newOther.position.x;
     const newY = newOther.position.y;
 
@@ -112,21 +92,21 @@ const avatarCollision = (sprite: Sprite, others: usersType): boolean => {
 
 /**
  * 경계 좌표와 이동하려는 좌표를 비교, 충돌 판정하는 함수
- * @param sprite 본인 캐릭터 인스턴스
- * @param nextPosition 이동하려는 좌표
- * @param nextPosition.x
- * @param boundaries 경계 좌표 배열
- * @param nextPosition.y
- * @param others
- * @param nextPosition.absoluteX
- * @param nextPosition.absoluteY
- * @returns boolean
+ * @param {Sprite} sprite 본인 캐릭터 인스턴스
+ * @param {object} nextPosition 예상 이동 좌표
+ * @param {number} nextPosition.x 상대 좌표 x
+ * @param {number} nextPosition.y 상대 좌표 y
+ * @param {number} nextPosition.absoluteX 절대 좌표 x
+ * @param {number} nextPosition.absoluteY 절대 좌표 y
+ * @param {Boundary[]} boundaries 충돌 좌표 배열
+ * @param {React.MutableRefObject<usersType[]>} usersRef 다른 유저 정보
+ * @returns {boolean} 충돌 여부
  */
 const checkCollision = (
   sprite: Sprite,
   nextPosition: { x: number; y: number; absoluteX: number; absoluteY: number },
   boundaries: Boundary[],
-  others: usersType | null,
+  usersRef: React.MutableRefObject<usersType[]>,
 ) => {
   const tempSprite = new Sprite({
     canvas: sprite.canvas,
@@ -137,6 +117,8 @@ const checkCollision = (
     nickname: sprite.nickname,
     blocksize: sprite.blocksize,
     weapon: sprite.weapon,
+    attack: sprite.attack,
+    health: sprite.health,
   });
 
   // 경계와 충돌 판정
@@ -146,6 +128,7 @@ const checkCollision = (
     }
   }
 
+  const others = usersRef.current;
   // 다른 유저와 충돌 판정
   if (others) {
     if (avatarCollision(tempSprite, others)) {

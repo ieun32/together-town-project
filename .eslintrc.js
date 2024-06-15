@@ -19,5 +19,5 @@ module.exports = {
   rules: {
     "prettier/prettier": ["error", { endOfLine: "auto" }],
   },
-  ignorePatterns: ["dist", "server.js"],
+  ignorePatterns: ["dist", "server.js", "src/functions/*.test.js"],
 };

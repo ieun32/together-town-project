@@ -26,6 +26,8 @@ type SpriteType = {
   cursor?: { x: number; y: number };
   blocksize: number;
   weapon: string | null;
+  attack: { state: boolean; endX: number; endY: number; angle: number };
+  health?: number;
 };
 
 type KeyDownHandlerType = {
@@ -35,7 +37,7 @@ type KeyDownHandlerType = {
   background: Background | null;
   boundaries: Boundary[];
   websocket: _WebSocket | null;
-  usersRef: React.RefObject<usersType | null>;
+  usersRef: React.MutableRefObject<usersType[]>;
   checkCollision: (
     avatar: Sprite,
     nextPosition: {
@@ -45,23 +47,25 @@ type KeyDownHandlerType = {
       absoluteY: number;
     },
     boundaries: Boundary[],
-    others: usersType | null,
+    others: React.MutableRefObject<usersType[]>,
   ) => boolean;
 };
 
 type KeyUpHandlerType = {
   keyRef: React.MutableRefObject<string | null>;
   avatar: Sprite | null;
+  websocket: _WebSocket | null;
 };
 
 type usersType = {
-  [key: string]: {
-    nickname: string;
-    position: { x: number; y: number; absoluteX: number; absoluteY: number };
-    direction: string;
-    blocksize: number;
-    weapon: string;
-  };
+  nickname: string;
+  position: { x: number; y: number; absoluteX: number; absoluteY: number };
+  direction: string;
+  blocksize: number;
+  weapon: string;
+  attack: { state: boolean; endX: number; endY: number; angle: number };
+  health: number;
+  cursor: { x: number; y: number };
 };
 
 export {
