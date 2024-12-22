@@ -14,7 +14,7 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 server.listen(80, () => {
-  console.log("server started on http://localhost:80");
+  console.log("server started on http://15.165.158.18:80");
 });
 
 // 두 객체는 id를 공유
