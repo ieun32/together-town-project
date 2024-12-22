@@ -50,7 +50,8 @@ class _WebSocket {
       cursor,
     };
 
-    const socket = new WebSocket(`ws://${window.location.host}`);
+    // const socket = new WebSocket(`ws://${window.location.host}`);
+    const socket = new WebSocket(`ws://15.165.158.18`);
     this.socket = socket;
 
     socket.addEventListener("open", () => {
